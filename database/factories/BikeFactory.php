@@ -13,7 +13,7 @@ class BikeFactory extends Factory
     {
         return [
             'name' => $this->faker->word,  // تولید یک کلمه تصادفی برای نام
-            'status' => $this->faker->randomElement(['available', 'unavailable']),  // وضعیت تصادفی
+            'status' => $this->faker->randomElement(['available', 'reserved']),  // وضعیت تصادفی
         ];
     }
 }

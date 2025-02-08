@@ -29,7 +29,7 @@ class ReservationController extends Controller
         );
 
         if ($isConflict) {
-            return response()->json(['message' => 'این دوچرخه در تاریخ‌های انتخابی رزرو شده است.'], 400);
+            return response()->json(['message' => 'this bicycle has been reserved this dates'], 400);
         }
 
         return Reservation::create([

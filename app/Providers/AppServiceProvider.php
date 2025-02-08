@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Bike;
 use App\Models\Reservation;
 use App\Observers\ReservationObserver;
+use App\Policies\BikePolicy;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        Passport::ignoreRoutes();
     }
 
     /**
@@ -22,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Reservation::observe(ReservationObserver::class);
+
     }
 }
