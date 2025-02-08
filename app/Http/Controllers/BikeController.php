@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bike;
+
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+
 
 class BikeController extends Controller
 {
@@ -15,7 +17,7 @@ class BikeController extends Controller
 
     public function create(Request $request)
     {
-        $this->authorize('create', Bike::class);
+dd(Gate::authorize('create', Bike::class));
 
         $request->validate(['name' => 'required|string']);
 
@@ -29,7 +31,7 @@ class BikeController extends Controller
 
     public function update(Request $request,Bike $bike)
     {
-        $this->authorize('update', $bike);
+        Gate::authorize('update', $bike);
         $request->validate([
             'name' => 'required|string'
         ]);
@@ -44,7 +46,7 @@ class BikeController extends Controller
 
     public function delete(Bike $bike)
     {
-        $this->authorize('delete', $bike);
+        Gate::authorize('delete', $bike);
         return $bike->delete();
 
     }

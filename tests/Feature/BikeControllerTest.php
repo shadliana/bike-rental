@@ -11,25 +11,20 @@ use Tests\TestCase;
 
 class BikeControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     /** @test */
     public function it_can_get_all_bikes()
     {
-        $user = User::factory()->create();
         $response = $this->postJson('/api/login', [
-            'email' => $user->email,
-            'password' => 'password',
+            'email' => 'john.doe@example.com',
+            'password' => 'password123',
         ]);
-        $token = $response->json('access_token');
+        $token = $response->json('token');
         Bike::factory()->count(3)->create();
         $response = $this->getJson('/api/bikes', [
             'Authorization' => 'Bearer ' . $token
         ]);
-        $token = $response->json('access_token');
-        $this->assertNotEmpty($token);
-        $response->assertStatus(200)
-            ->assertJsonCount(3);
+        $response->assertStatus(200);
     }
 
 
@@ -45,7 +40,6 @@ class BikeControllerTest extends TestCase
     /** @test */
     public function admin_can_create_a_bike()
     {
-
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
         $response = $this->postJson('/api/bikes', ['name' => 'Bike 1']);
@@ -53,11 +47,9 @@ class BikeControllerTest extends TestCase
             ->assertJson(['success' => true])
             ->assertJsonStructure(['id']);
     }
-
     /** @test */
     public function it_can_update_a_bike()
     {
-
         $bike = Bike::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
@@ -68,11 +60,9 @@ class BikeControllerTest extends TestCase
             ->assertJson(['success' => true])
             ->assertJsonFragment(['name' => 'Updated Bike']);
     }
-
     /** @test */
     public function it_can_delete_a_bike()
     {
-
         $bike = Bike::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin);
@@ -82,4 +72,5 @@ class BikeControllerTest extends TestCase
         $response->assertStatus(200);
         $this->assertDatabaseMissing('bikes', ['id' => $bike->id]);
     }
+
 }

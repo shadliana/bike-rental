@@ -5,7 +5,6 @@ use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_register()
     {

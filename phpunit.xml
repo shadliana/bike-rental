@@ -29,8 +29,8 @@
         <env name="DB_PASSWORD" value="1234" />
         <env name="DB_DATABASE" value="bicycle" />
 
-        <env name="PASSPORT_PERSONAL_ACCESS_CLIENT_ID" value="1"/>
-        <env name="PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET" value="HO5n78c4m89db4soqdb5OE6U9MHxnyMcd4pMvX"/>
+<!--        <env name="PASSPORT_PERSONAL_ACCESS_CLIENT_ID" value="1"/>-->
+<!--        <env name="PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET" value="HO5n78c4m89db4soqdb5OE6U9MHxnyMcd4pMvX"/>-->
 
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
