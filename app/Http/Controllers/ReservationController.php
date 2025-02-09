@@ -17,15 +17,12 @@ class ReservationController extends Controller
     public function create(Request $request, ReservationService $reservationService)
     {
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'bike_id' => 'required|exists:bikes,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
         $isConflict = $reservationService->checkReservationConflict(
             $request->bike_id,
             $request->start_date,
@@ -47,6 +44,8 @@ class ReservationController extends Controller
 
     public function delete(Reservation $reservation)
     {
+
+
         $reservation->delete();
 
         return response()->json([
