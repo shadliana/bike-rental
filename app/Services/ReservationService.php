@@ -16,16 +16,14 @@ class ReservationService
     {
         return Reservation::where('bike_id', $bike_id)
             ->where(function ($query) use ($start_date, $end_date) {
-                // بررسی تداخل برای تاریخ شروع و تاریخ پایان
                 $query->whereBetween('start_date', [$start_date, $end_date])
                     ->orWhereBetween('end_date', [$start_date, $end_date])
-                    // بررسی تداخل در صورتی که تاریخ شروع رزرو در بازه تاریخ شروع و پایان دیگر قرار گیرد
                     ->orWhere(function ($query) use ($start_date, $end_date) {
                         $query->where('start_date', '<=', $start_date)
                             ->where('end_date', '>=', $end_date);
                     });
             })
-            ->exists();  // این متد فقط بررسی می‌کند که آیا چنین تداخلی وجود دارد یا نه
+            ->exists();
     }
 
 }
