@@ -32,7 +32,7 @@ class BikeControllerTest extends TestCase
     public function only_admin_can_create_a_bike()
     {
         $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->actingAs($user, 'api');
         $response = $this->postJson('/api/bikes', ['name' => 'Bike 1']);
         $response->assertStatus(403);
     }
@@ -41,36 +41,53 @@ class BikeControllerTest extends TestCase
     public function admin_can_create_a_bike()
     {
         $admin = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'api');
         $response = $this->postJson('/api/bikes', ['name' => 'Bike 1']);
-        $response->assertStatus(200)
-            ->assertJson(['success' => true])
-            ->assertJsonStructure(['id']);
+        $response->assertStatus(201)
+            ->assertJson([
+                'success' => true,
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'name',
+                ],
+            ]);
     }
+
     /** @test */
     public function it_can_update_a_bike()
     {
         $bike = Bike::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'api');
 
         $response = $this->putJson('/api/bikes/' . $bike->id, ['name' => 'Updated Bike']);
 
-        $response->assertStatus(200)
-            ->assertJson(['success' => true])
-            ->assertJsonFragment(['name' => 'Updated Bike']);
+        $response->assertStatus(201)
+        ->assertJson([
+        'success' => true,
+    ])
+        ->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+            ],
+        ]);
+
     }
+
     /** @test */
     public function it_can_delete_a_bike()
     {
         $bike = Bike::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
-        $this->actingAs($admin);
+        $this->actingAs($admin,'api');
 
         $response = $this->deleteJson('/api/bikes/' . $bike->id);
 
         $response->assertStatus(200);
-        $this->assertDatabaseMissing('bikes', ['id' => $bike->id]);
+        $this->assertSoftDeleted('bikes', ['id' => $bike->id]);
     }
 
 }

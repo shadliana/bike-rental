@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reservation;
 use App\Services\ReservationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
 {
@@ -16,12 +17,15 @@ class ReservationController extends Controller
     public function create(Request $request, ReservationService $reservationService)
     {
 
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'bike_id' => 'required|exists:bikes,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
         $isConflict = $reservationService->checkReservationConflict(
             $request->bike_id,
             $request->start_date,
@@ -43,8 +47,12 @@ class ReservationController extends Controller
 
     public function delete(Reservation $reservation)
     {
-        return $reservation->delete();
+        $reservation->delete();
 
+        return response()->json([
+            'success' => true,
+            'message' => __('delete was successful'),
+        ], 200);
     }
 }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateBikeRequest;
+use App\Http\Resources\BikeResource;
 use App\Models\Bike;
 
 use Illuminate\Http\Request;
@@ -12,43 +14,40 @@ class BikeController extends Controller
 {
     public function index()
     {
-        return Bike::all();
+        $bikes = Bike::all();
+        return BikeResource::collection($bikes);
     }
 
-    public function create(Request $request)
+    public function create(CreateBikeRequest $request)
     {
-dd(Gate::authorize('create', Bike::class));
-
-        $request->validate(['name' => 'required|string']);
-
-        $query = Bike::create(['name' => $request['name']]);
-
+        $bike = Bike::create($request->validated());
         return response()->json([
             'success' => true,
-            'message' => __('create was successful'),
-        ], ['id' => $query->id]);
+            'data' => new BikeResource($bike),
+        ], 201);
     }
 
-    public function update(Request $request,Bike $bike)
+    public function update(Request $request, Bike $bike)
     {
-        Gate::authorize('update', $bike);
-        $request->validate([
-            'name' => 'required|string'
-        ]);
-
-        $query = Bike::update(['name' => $request['name']]);
-
+        $bike->update(['name' => $request->name]);
         return response()->json([
             'success' => true,
-            'message' => __('create was successful'),
-        ], ['id' => $query->id]);
+            'data' => new BikeResource($bike),
+        ], 201);
+
     }
 
     public function delete(Bike $bike)
     {
         Gate::authorize('delete', $bike);
-        return $bike->delete();
 
+        $bike->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('delete was successful'),
+        ], 200);
     }
+
 }
 

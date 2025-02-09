@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Bike;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
-namespace App\Policies;
 
 
 class BikePolicy

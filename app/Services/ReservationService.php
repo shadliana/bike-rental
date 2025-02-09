@@ -12,19 +12,20 @@ class ReservationService
      * @param string $endDate
      * @return bool
      */
-    public function checkReservationConflict(int $bikeId, string $startDate, string $endDate): bool
+    public function checkReservationConflict($bike_id, $start_date, $end_date)
     {
-        $existingReservations = Reservation::where('bike_id', $bikeId)
-            ->where(function($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate])
-                    ->orWhere(function($query) use ($startDate, $endDate) {
-                        $query->where('start_date', '<=', $startDate)
-                            ->where('end_date', '>=', $endDate);
+        return Reservation::where('bike_id', $bike_id)
+            ->where(function ($query) use ($start_date, $end_date) {
+                // بررسی تداخل برای تاریخ شروع و تاریخ پایان
+                $query->whereBetween('start_date', [$start_date, $end_date])
+                    ->orWhereBetween('end_date', [$start_date, $end_date])
+                    // بررسی تداخل در صورتی که تاریخ شروع رزرو در بازه تاریخ شروع و پایان دیگر قرار گیرد
+                    ->orWhere(function ($query) use ($start_date, $end_date) {
+                        $query->where('start_date', '<=', $start_date)
+                            ->where('end_date', '>=', $end_date);
                     });
             })
-            ->exists();
-
-        return !$existingReservations;
+            ->exists();  // این متد فقط بررسی می‌کند که آیا چنین تداخلی وجود دارد یا نه
     }
+
 }
